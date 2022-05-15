@@ -7,16 +7,12 @@ class Loader:
     def __init__(self, session=None):
         self.session = session if session else create_session()
 
-    def exists(self, data):
-        addresses = [l.address for l in data]
-        result = self.session.query(Listing).filter(Listing.address.in_(addresses))
-        return result
+    def exists(self, row):
+        query_result = self.session.query(Listing).filter_by(address=row.address).first()
+        return bool(query_result)
 
     def load(self, data):
-        print(self.exists(data))
-        # if self.exists(data):
-        #     logging.info(f"{data} is already registered")
-        # else:
-        #     self.session.add_all(data)
-        #     logging.info(f"registered: {data}")
-        # self.session.commit()
+        for row in data:
+            if not self.exists(row):
+                self.session.add(row)
+        self.session.commit()
