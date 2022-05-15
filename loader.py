@@ -1,4 +1,3 @@
-import logging
 from dbutils import create_session
 from models import Listing
 
