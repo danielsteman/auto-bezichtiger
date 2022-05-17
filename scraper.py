@@ -20,7 +20,7 @@ def driver_init():
         options=chrome_options
     )
 
-def extract(driver, *, identifier, url):
+def extract(driver, *, identifier: str, url: str):
     driver.get(url)
     result = driver.find_elements_by_class_name(identifier)
     if isinstance(result, list):
@@ -34,12 +34,19 @@ def transform(data):
     mapper.map()
     return mapper.mapped_data
 
+estate_agents = {
+    'vesteda': {
+        'url': "https://www.vesteda.com/nl/woning-zoeken?s=Amsterdam,%20Nederland&sc=woning&priceFrom=1200&priceTo=2000&bedRooms=0&unitTypes=2&unitTypes=1&unitTypes=3&unitTypes=4&radius=20&placeType=1&lng=4.904139&lat=52.3675728&sortType=0",
+        'lookup_class': "o-card o-card--listing o-card--shadow-small o-card--clickable",
+    },
+    'pararius': {
+        'url': "https://www.pararius.nl/huurwoningen/amsterdam/wijk-bos-en-lommer,centrum-oost,centrum-west,de-baarsjes,de-pijp,indische-buurt,oostelijk-havengebied,oud-oost,oud-west,oud-zuid,rivierenbuurt,westelijk-havengebied,westerpark,zeeburgereiland,zuidas/1300-1750/3-aantalkamers/50m2",
+        'lookup_class': "listing-search-item.listing-search-item--list.listing-search-item--for-rent",
+    },
+}
+
 driver = driver_init()
-
-url = "https://www.pararius.nl/huurwoningen/amsterdam/wijk-bos-en-lommer,centrum-oost,centrum-west,de-baarsjes,de-pijp,indische-buurt,oostelijk-havengebied,oud-oost,oud-west,oud-zuid,rivierenbuurt,westelijk-havengebied,westerpark,zeeburgereiland,zuidas/1300-1750/3-aantalkamers/50m2"
-lookup_class = "listing-search-item.listing-search-item--list.listing-search-item--for-rent"
-
-data = extract(driver, identifier=lookup_class, url=url)
+data = extract(driver, identifier=estate_agents['pararius']['lookup_class'], url=estate_agents['pararius']['url'])
 parsed_data = [listing.split('\n') for listing in data]
 collection = [transform(line) for line in parsed_data]
 
