@@ -20,10 +20,6 @@ class Config(metaclass=Singleton):
     def get(self, *keys):
         return reduce(operator.getitem, keys, self.config)
 
-    def getFromDict(dataDict, mapList):
-        return reduce(operator.getitem, mapList, dataDict)
-
     def set(self, *keys, value):
         self.get(list(keys)[:-1])[list(keys)[-1]] = value
 
-    

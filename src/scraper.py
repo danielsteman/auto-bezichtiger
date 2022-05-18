@@ -16,7 +16,7 @@ def driver_init():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     return webdriver.Chrome(
-        ChromeDriverManager().install(), 
+        ChromeDriverManager().install(),
         options=chrome_options
     )
 
