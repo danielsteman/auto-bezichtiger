@@ -3,6 +3,7 @@ import logging
 from dotenv import load_dotenv
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from loader import Loader
 from mapper import Mapper
@@ -16,9 +17,13 @@ def driver_init():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     return webdriver.Chrome(
-        ChromeDriverManager().install(),
+        service=Service(ChromeDriverManager().install()),
         options=chrome_options
     )
+    # return webdriver.Chrome(
+    #     ChromeDriverManager().install(),
+    #     options=chrome_options
+    # )
 
 def extract(driver, *, identifier: str, url: str):
     driver.get(url)
