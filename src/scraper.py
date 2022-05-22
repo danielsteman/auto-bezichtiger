@@ -5,18 +5,26 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from extractors import Extractor
 from loader import Loader
 from mapper import Mapper
 from configurator import Config
+from transformer import Transformer
 
 load_dotenv()
 
 if os.getenv("DEBUG") == "True":
     logging.basicConfig(level=logging.INFO)
 
-def driver_init():
+def driver_init(remote_address: str = None):
     chrome_options = Options()
+    chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--headless")
+    if remote_address:
+        return webdriver.Chrome(
+            command_executor=remote_address,
+            options=chrome_options
+        )
     return webdriver.Chrome(
         service=Service(ChromeDriverManager().install()),
         options=chrome_options
@@ -36,17 +44,6 @@ def transform(data):
     mapper.map()
     return mapper.mapped_data
 
-estate_agents = {
-    'vesteda': {
-        'url': "https://www.vesteda.com/nl/woning-zoeken?s=Amsterdam,%20Nederland&sc=woning&priceFrom=1200&priceTo=2000&bedRooms=0&unitTypes=2&unitTypes=1&unitTypes=3&unitTypes=4&radius=20&placeType=1&lng=4.904139&lat=52.3675728&sortType=0",
-        'lookup_class': "o-card o-card--listing o-card--shadow-small o-card--clickable",
-    },
-    'pararius': {
-        'url': "https://www.pararius.nl/huurwoningen/amsterdam/wijk-bos-en-lommer,centrum-oost,centrum-west,de-baarsjes,de-pijp,indische-buurt,oostelijk-havengebied,oud-oost,oud-west,oud-zuid,rivierenbuurt,westelijk-havengebied,westerpark,zeeburgereiland,zuidas/1300-1750/3-aantalkamers/50m2",
-        'lookup_class': "listing-search-item.listing-search-item--list.listing-search-item--for-rent",
-    },
-}
-
 def etl(estate_agent: str, *, config: Config):
     identifier = config.get('agents', estate_agent, 'class')
     url = config.get('agents', estate_agent, 'url')
@@ -61,3 +58,44 @@ def etl(estate_agent: str, *, config: Config):
     driver.close()
 
 
+class Scraper:
+    def __init__(
+        self,
+        config: Config,
+        estate_agent: str,
+        extractor: Extractor,
+        transformer: Transformer,
+        mapper = Mapper,
+        loader = Loader,
+        remote: str = None
+    ):
+        self.config = config
+        self.estate_agent = estate_agent
+        self.extractor = extractor
+        self.transformer = transformer
+        self.mapper = mapper
+        self.loader = loader
+        self.remote = remote
+        self.chrome_options = Options()
+        self.chrome_options.add_argument("--headless")
+        self.chrome_options.add_argument('--no-sandbox')
+    
+    def __enter__(self):
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=self.chrome_options
+        )
+        if self.remote:
+            self.driver.command_executor = self.remote
+
+    def etl(self):
+        extractor = self.extractor(self.driver, self.config)
+        scraped_data = extractor.extract()
+        transformer = self.transformer(scraped_data, self.mapper)
+        data = transformer.transform()
+        loader = self.loader()
+        loader.load(data)
+        return data
+
+    def __exit__(self):
+        self.driver.close()

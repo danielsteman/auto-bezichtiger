@@ -44,7 +44,3 @@ class Messenger:
 
     def start_polling(self):
         self.bot.infinity_polling()
-
-
-# messenger = Messenger()
-# messenger.start_polling()
