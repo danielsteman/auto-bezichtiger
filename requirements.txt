@@ -1,6 +1,7 @@
+pyTelegramBotAPI==4.5.1
 python-dotenv==0.20.0
+PyYAML==6.0
 selenium==4.1.5
 SQLAlchemy==1.4.36
 webdriver_manager==3.5.4
-python-telegram-bot
-pyyaml
+psycopg2==2.9.3
