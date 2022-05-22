@@ -1,23 +1,43 @@
+import logging
+from typing import Union
+import telebot
 import os
 from dotenv import load_dotenv
-import logging
-from telegram import Update
-from telegram.ext import Application, CallbackContext, CommandHandler
 
 load_dotenv()
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+TOKEN = os.getenv('TELEGRAM_API_TOKEN')
+CID = os.getenv('TELEGRAM_CHAT_ID')
 
-async def start(update: Update, context: CallbackContext.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+if os.getenv("DEBUG") == "True":
+    logging.basicConfig(level=logging.INFO)
 
-if __name__ == '__main__':
-    application = Application().token(os.getenv("TELEGRAM_API_TOKEN")).build()
-    
-    start_handler = CommandHandler('start', start)
-    application.add_handler(start_handler)
-    
-    application.run_polling()
+
+class Messenger:
+    """
+    Need to figure out how polling and sending messages can work together.
+    With `import threading`?
+    Example: https://gist.github.com/David-Lor/37e0ae02cd7fb1cd01085b2de553dde4
+    """
+    def __init__(self, token: str = TOKEN, cids: Union[str, list[str]] = CID):
+        self.cids = [cids] if isinstance(cids, str) else cids
+        self.bot = telebot.TeleBot(token)
+        self._bot_actions()
+
+    def _bot_actions(self):
+        @self.bot.message_handler(commands=['start'])
+        def _handle_start_message(message):
+            self.bot.reply_to(message, "Hi there!")
+            logging.info(f'New chat registered with id: {message.chat.id}')
+
+        @self.bot.message_handler(commands=['end'])
+        def _handle_end_message(message):
+            self.bot.reply_to(message, "You've been removed")
+            logging.info(f'Chat id {message.chat.id} has requested to end notifications')
+
+    def send_notification(self, msg: str):
+        for cid in self.cids:
+            self.bot.send_message(chat_id=cid, text=msg)
+
+    def polling(self):
+        self.bot.infinity_polling()

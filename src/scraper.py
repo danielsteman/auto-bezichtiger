@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from loader import Loader
 from mapper import Mapper
+from configurator import Config
 
 load_dotenv()
 
@@ -20,10 +21,6 @@ def driver_init():
         service=Service(ChromeDriverManager().install()),
         options=chrome_options
     )
-    # return webdriver.Chrome(
-    #     ChromeDriverManager().install(),
-    #     options=chrome_options
-    # )
 
 def extract(driver, *, identifier: str, url: str):
     driver.get(url)
@@ -50,12 +47,17 @@ estate_agents = {
     },
 }
 
-driver = driver_init()
-data = extract(driver, identifier=estate_agents['pararius']['lookup_class'], url=estate_agents['pararius']['url'])
-parsed_data = [listing.split('\n') for listing in data]
-collection = [transform(line) for line in parsed_data]
+def etl(estate_agent: str, *, config: Config):
+    identifier = config.get('agents', estate_agent, 'class')
+    url = config.get('agents', estate_agent, 'url')
+    driver = driver_init()
+    data = extract(driver, identifier=identifier, url=url)
+    parsed_data = [listing.split('\n') for listing in data]
+    collection = [transform(line) for line in parsed_data]
 
-loader = Loader()
-loader.load(collection)
+    loader = Loader()
+    loader.load(collection)
 
-driver.close()
+    driver.close()
+
+

@@ -1,4 +1,5 @@
 from functools import reduce
+from typing import Union
 import yaml
 from yaml.loader import SafeLoader
 import operator
@@ -17,9 +18,8 @@ class Config(metaclass=Singleton):
         with open('settings.yaml') as f:
             self.config = yaml.load(f, Loader=SafeLoader)
 
-    def get(self, *keys):
+    def get(self, *keys: tuple):
         return reduce(operator.getitem, keys, self.config)
 
-    def set(self, *keys, value):
+    def set(self, *keys: tuple, value: Union[str, int]):
         self.get(list(keys)[:-1])[list(keys)[-1]] = value
-
