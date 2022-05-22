@@ -18,6 +18,5 @@ WORKDIR /app
 # Copy settings and code into wd
 COPY settings.yaml settings.yaml
 COPY src src
-COPY .env .env
 
 CMD [ "python", "src/main.py" ]
