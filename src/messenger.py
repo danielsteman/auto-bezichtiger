@@ -1,16 +1,12 @@
 import logging
-from typing import Union
 import telebot
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 TOKEN = os.getenv('TELEGRAM_API_TOKEN')
 CIDS = os.getenv('TELEGRAM_CHAT_ID')
-
-if os.getenv("DEBUG") == "True":
-    logging.basicConfig(level=logging.INFO)
 
 
 class Messenger:

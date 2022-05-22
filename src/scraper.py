@@ -1,6 +1,5 @@
 import os
 import logging
-from dotenv import load_dotenv
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -10,8 +9,6 @@ from loader import Loader
 from mapper import Mapper
 from configurator import Config
 from transformer import Transformer
-
-load_dotenv()
 
 if os.getenv("DEBUG") == "True":
     logging.basicConfig(level=logging.INFO)
