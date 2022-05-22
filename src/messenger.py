@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv('TELEGRAM_API_TOKEN')
-CID = os.getenv('TELEGRAM_CHAT_ID')
+CIDS = os.getenv('TELEGRAM_CHAT_ID')
 
 if os.getenv("DEBUG") == "True":
     logging.basicConfig(level=logging.INFO)
@@ -19,10 +19,13 @@ class Messenger:
     With `import threading`?
     Example: https://gist.github.com/David-Lor/37e0ae02cd7fb1cd01085b2de553dde4
     """
-    def __init__(self, token: str = TOKEN, cids: Union[str, list[str]] = CID):
-        self.cids = [cids] if isinstance(cids, str) else cids
+    def __init__(self, token: str = TOKEN, cids: str = CIDS):
+        self.cids = self._cids_parser(cids)
         self.bot = telebot.TeleBot(token)
         self._bot_actions()
+
+    def _cids_parser(self, cids):
+        return [int(cid) for cid in cids.split(',')]
 
     def _bot_actions(self):
         @self.bot.message_handler(commands=['start'])
@@ -39,5 +42,9 @@ class Messenger:
         for cid in self.cids:
             self.bot.send_message(chat_id=cid, text=msg)
 
-    def polling(self):
+    def start_polling(self):
         self.bot.infinity_polling()
+
+
+# messenger = Messenger()
+# messenger.start_polling()
