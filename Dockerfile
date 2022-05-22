@@ -10,9 +10,6 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 # Install Python dependencies
 RUN pip install -U pip && pip install --user -r requirements.txt
-# Add root and bin to path
-ENV PYTHONPATH="."
-ENV PYTHONPATH="/root/.local/bin"
 # Set wd
 WORKDIR /app
 # Copy settings and code into wd
