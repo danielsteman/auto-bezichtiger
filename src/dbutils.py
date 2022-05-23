@@ -8,8 +8,7 @@ from models import Base
 load_dotenv()
 
 def create_connection():
-    print(os.getenv("DATABASE_URL"))
-    conn = create_engine(os.getenv("DATABASE_URL"), echo=True)
+    conn = create_engine(os.getenv("DB_URL"), echo=True)
     return conn
 
 def create_tables(connection=None, base=Base):
