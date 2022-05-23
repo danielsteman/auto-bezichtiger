@@ -11,12 +11,12 @@ def create_connection():
     conn = create_engine(os.getenv("DB_URL"), echo=True)
     return conn
 
-def create_tables(connection=None, base=Base):
+def create_tables(connection=None, base=Base) -> None:
     if not connection:
         connection = create_connection()
     base.metadata.create_all(connection)
 
-def create_session():
+def create_session() -> sessionmaker:
     engine = create_connection()
     Session = sessionmaker(bind=engine)
     session = Session()

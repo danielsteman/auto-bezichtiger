@@ -12,6 +12,7 @@ from messenger import Messenger
 if __name__ == "__main__":
     config = Config()
     interval = config.get('interval')
+    retry_limit = config.get('retry_limit')
     messenger = Messenger()
 
     dbutils.create_tables()
@@ -25,11 +26,16 @@ if __name__ == "__main__":
         loader = Loader
     ) as scraper:
         while True:
+            fails = 0
             try:
                 scraper.etl()
+                fails = 0
                 sleep(interval)
             except Exception as e:
                 logging.warning(f'Something went wrong.\n{e}')
-                messenger.send_notification(
-                    msg='An error was raised during the house search.'
-                )
+                fails += 1
+                if fails == retry_limit:
+                    messenger.send_notification(
+                        msg=f'An error was raised {fails} times during the house search.'
+                    )
+                    break

@@ -8,6 +8,7 @@ from extractors import Extractor
 from loader import Loader
 from mapper import Mapper
 from configurator import Config
+from messenger import Messenger
 from transformer import Transformer
 
 if os.getenv("DEBUG"):
@@ -22,8 +23,9 @@ class Scraper:
         estate_agent: str,
         extractor: Extractor,
         transformer: Transformer,
-        mapper = Mapper,
-        loader = Loader,
+        mapper: Mapper,
+        loader: Loader,
+        messenger: Messenger = None,
         remote: str = None
     ):
         self.config = config
@@ -33,6 +35,7 @@ class Scraper:
         self.mapper = mapper
         self.loader = loader
         self.remote = remote
+        self.messenger = messenger
         self.chrome_options = Options()
         self.chrome_options.add_argument("--headless")
         self.chrome_options.add_argument('--no-sandbox')
@@ -53,7 +56,12 @@ class Scraper:
         transformer = self.transformer(scraped_data, self.mapper)
         data = transformer.transform()
         loader = self.loader()
-        loader.load(data)
+        for row in data:
+            result = loader.load(row)
+            if result:
+                self.messenger.send_notification(
+                    msg=f"New listing found on {self.estate_agent}:\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}\nWebsite: {self.config.get('agents', self.estate_agent, 'url')}"
+                )
         return data
 
     def __exit__(self):

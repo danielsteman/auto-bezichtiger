@@ -1,3 +1,4 @@
+from configurator import Config
 from dbutils import create_session
 from models import Listing
 from messenger import Messenger
@@ -14,15 +15,13 @@ class Loader:
         self.session = session if session else create_session()
         self.messenger = Messenger()
 
-    def exists(self, row) -> bool:
-        query_result = self.session.query(Listing).filter_by(address=row.address).first()
+    def exists(self, data) -> bool:
+        query_result = self.session.query(Listing).filter_by(address=data.address).first()
         return bool(query_result)
 
-    def load(self, data: list[Listing]):
-        for row in data:
-            if not self.exists(row):
-                self.session.add(row)
-                self.messenger.send_notification(
-                    msg=f'New listing found on Pararius:\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}'
-                )
+    def load(self, data: list[Listing]) -> bool:
+        if not self.exists(data):
+            self.session.add(data)
+            return True
         self.session.commit()
+        return False
