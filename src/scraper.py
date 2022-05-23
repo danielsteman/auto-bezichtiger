@@ -51,9 +51,9 @@ class Scraper:
         return self
 
     def etl(self):
-        extractor = self.extractor(self.driver, self.config)
+        extractor = self.extractor(self.driver, self.config, self.estate_agent)
         scraped_data = extractor.extract()
-        transformer = self.transformer(scraped_data, self.mapper)
+        transformer = self.transformer(scraped_data, self.mapper, self.estate_agent)
         data = transformer.transform()
         loader = self.loader()
         for row in data:
