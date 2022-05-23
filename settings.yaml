@@ -1,5 +1,6 @@
 app_name: auto-bezichtiger
 logLevel: INFO
+interval: 30
 agents:
   pararius:
     url: https://www.pararius.nl/huurwoningen/amsterdam/wijk-bos-en-lommer,centrum-oost,centrum-west,de-baarsjes,de-pijp,indische-buurt,oostelijk-havengebied,oud-oost,oud-west,oud-zuid,rivierenbuurt,westelijk-havengebied,westerpark,zeeburgereiland,zuidas/1300-1750/3-aantalkamers/50m2

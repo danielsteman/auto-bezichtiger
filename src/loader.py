@@ -19,9 +19,6 @@ class Loader:
         return bool(query_result)
 
     def load(self, data: list[Listing]):
-        # self.messenger.send_notification(
-        #             msg=f'New listing found on Pararius:\nAddress: {data[0].address}\nPrice: {data[0].price}\nSquare meters: {data[0].sq_meters}'
-        #         )
         for row in data:
             if not self.exists(row):
                 self.session.add(row)
