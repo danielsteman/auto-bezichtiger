@@ -1,13 +1,14 @@
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models import Base
 
-# load_dotenv()
+load_dotenv()
 
 def create_connection():
+    print(os.getenv("DATABASE_URL"))
     conn = create_engine(os.getenv("DATABASE_URL"), echo=True)
     return conn
 

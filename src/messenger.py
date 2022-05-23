@@ -1,9 +1,9 @@
 import logging
 import telebot
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
-# load_dotenv()
+load_dotenv()
 
 TOKEN = os.getenv('TELEGRAM_API_TOKEN')
 CIDS = os.getenv('TELEGRAM_CHAT_ID')
