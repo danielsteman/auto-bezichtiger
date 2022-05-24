@@ -20,9 +20,10 @@ class Loader:
         return bool(query_result)
 
     def load(self, data: list[Listing]) -> bool:
-        if not self.exists(data):
-            self.session.add(data)
+        # if not self.exists(data):
+        if True:
+            # self.session.add(data)
+            # self.session.commit()
             logging.info(f"New listing found: {data}")
             return True
-        self.session.commit()
         return False

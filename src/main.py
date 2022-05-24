@@ -22,8 +22,9 @@ if __name__ == "__main__":
         estate_agent='pararius',
         extractor=Extractor,
         transformer=ParariusTransformer,
-        mapper = Mapper,
-        loader = Loader
+        mapper=Mapper,
+        loader=Loader,
+        messenger=Messenger
     ) as scraper:
         while True:
             fails = 0
