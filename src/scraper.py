@@ -60,7 +60,7 @@ class Scraper:
         for row in data:
             result = loader.load(row)
             if result:
-                msg=f"New listing found on {self.estate_agent}:\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}\nWebsite: {self.config.get('agents', self.estate_agent, 'url')}"
+                msg=f"New listing found on {self.estate_agent}:\nTitle: {row.title}\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}\nWebsite: {self.config.get('agents', self.estate_agent, 'url')}"
                 messenger.send_notification(
                     msg=msg
                 )
