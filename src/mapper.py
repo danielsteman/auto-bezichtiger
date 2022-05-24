@@ -2,9 +2,9 @@ from models import Listing
 
 
 class Mapper:
-    def __init__(self, data: list, website: str = None):
+    def __init__(self, data: list[str]):
         self.data = data
-        self.website = website
+        self.mapped_data = None
 
     def _move_item_to_end(self, index: int):
         self.data.append(self.data.pop(index))

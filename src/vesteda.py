@@ -1,5 +1,6 @@
 from configurator import Config
 from extractors import Extractor
+from mapper import Mapper
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -29,4 +30,10 @@ parsed_data = [e.text for e in result]
 exclude_values = ["slaap\xadkamer(s)", "Appartement", "per maand", "Oppervlakte", "BEKIJK WONING"]
 data = [i.split('\n') for i in parsed_data]
 data = [word for sentence in data for word in sentence if word not in exclude_values]
-print(data)
+rows = list(zip(*(iter(data),) * 6))
+for row in rows:
+    ('3', '110 m²', 'Verhuurd onder voorbehoud', 'Spijkerboorweg 114', 'Haarlem', '€ 1295,-')
+    mapped_row = ['Appartement', row[3], row[5], row[1], row[0], 'Interieur onbekend', 'Makelaar onbekend', row[2], 'self.estate_agent']
+    mapper = Mapper(mapped_row)
+
+    print(mapped_row)
