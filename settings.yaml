@@ -5,7 +5,7 @@ retry_pause: 10
 retry_limit: 10
 agents:
   pararius:
-    url: https://www.pararius.nl/huurwoningen/amsterdam/wijk-bos-en-lommer,centrum-oost,centrum-west,de-baarsjes,de-pijp,indische-buurt,oostelijk-havengebied,oud-oost,oud-west,oud-zuid,rivierenbuurt,westelijk-havengebied,westerpark,zeeburgereiland,zuidas/1300-1750/3-aantalkamers/50m2
+    url: https://www.pararius.nl/huurwoningen/amsterdam/wijk-bos-en-lommer,centrum-oost,centrum-west,de-baarsjes,de-pijp,indische-buurt,oostelijk-havengebied,oud-oost,oud-west,oud-zuid,rivierenbuurt,westelijk-havengebied,westerpark,zeeburgereiland,zuidas/1300-1750/50m2
     class: listing-search-item.listing-search-item--list.listing-search-item--for-rent
   vesteda:
     url: https://www.vesteda.com/nl/woning-zoeken?s=Amsterdam,%20Nederland&sc=woning&priceFrom=1200&priceTo=2000&bedRooms=0&unitTypes=2&unitTypes=1&unitTypes=3&unitTypes=4&radius=20&placeType=1&lng=4.904139&lat=52.3675728&sortType=0

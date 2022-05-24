@@ -11,7 +11,8 @@ CIDS = os.getenv('TELEGRAM_CHAT_ID')
 
 class Messenger:
     """
-    Need to figure out how polling and sending messages can work together.
+    Need to figure out how polling and sending messages can work together
+    to prevent having to manually fetch and store the CID. Works for now.
     With `import threading`?
     Example: https://gist.github.com/David-Lor/37e0ae02cd7fb1cd01085b2de553dde4
     """

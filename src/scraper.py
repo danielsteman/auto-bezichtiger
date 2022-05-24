@@ -1,4 +1,3 @@
-import os
 import logging
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -11,9 +10,6 @@ from configurator import Config
 from messenger import Messenger
 from transformer import Transformer
 
-if os.getenv("DEBUG"):
-    logging.basicConfig(level=logging.INFO)
-
 
 class Scraper:
     def __init__(
@@ -25,7 +21,7 @@ class Scraper:
         transformer: Transformer,
         mapper: Mapper,
         loader: Loader,
-        messenger: Messenger = None,
+        messenger: Messenger,
         remote: str = None
     ):
         self.config = config
@@ -40,6 +36,9 @@ class Scraper:
         self.chrome_options.add_argument("--headless")
         self.chrome_options.add_argument('--no-sandbox')
         self.chrome_options.add_argument('--disable-dev-shm-usage')
+        self.chrome_options.add_argument("start-maximized")
+        self.chrome_options.add_argument("enable-automation")
+        self.chrome_options.add_argument("--disable-browser-side-navigation")
     
     def __enter__(self):
         self.driver = webdriver.Chrome(
@@ -56,12 +55,17 @@ class Scraper:
         transformer = self.transformer(scraped_data, self.mapper, self.estate_agent)
         data = transformer.transform()
         loader = self.loader()
+        messenger = self.messenger()
+
         for row in data:
             result = loader.load(row)
-            if result and self.messenger:
-                self.messenger.send_notification(
-                    msg=f"New listing found on {self.estate_agent}:\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}\nWebsite: {self.config.get('agents', self.estate_agent, 'url')}"
+            if result:
+                msg=f"New listing found on {self.estate_agent}:\n{row.title}\n{row.address}\n{row.price}\n{row.sq_meters}\n{row.interior}\n\n{self.config.get('agents', self.estate_agent, 'url')}"
+                messenger.send_notification(
+                    msg=msg
                 )
+                logging.info(f"Message sent: {msg}")
+                
         return data
 
     def __exit__(self):
