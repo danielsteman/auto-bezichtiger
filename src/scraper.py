@@ -1,4 +1,3 @@
-import os
 import logging
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -10,9 +9,6 @@ from mapper import Mapper
 from configurator import Config
 from messenger import Messenger
 from transformer import Transformer
-
-if os.getenv("DEBUG"):
-    logging.basicConfig(level=logging.INFO)
 
 
 class Scraper:
@@ -63,9 +59,11 @@ class Scraper:
         for row in data:
             result = loader.load(row)
             if result and self.messenger:
+                msg=f"New listing found on {self.estate_agent}:\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}\nWebsite: {self.config.get('agents', self.estate_agent, 'url')}"
                 self.messenger.send_notification(
-                    msg=f"New listing found on {self.estate_agent}:\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}\nWebsite: {self.config.get('agents', self.estate_agent, 'url')}"
+                    msg=msg
                 )
+                logging.info(f"Send message: {msg}")
         return data
 
     def __exit__(self):

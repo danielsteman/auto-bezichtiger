@@ -1,4 +1,4 @@
-from configurator import Config
+import logging
 from dbutils import create_session
 from models import Listing
 from messenger import Messenger
@@ -22,6 +22,7 @@ class Loader:
     def load(self, data: list[Listing]) -> bool:
         if not self.exists(data):
             self.session.add(data)
+            logging.info(f"New listing found: {data}")
             return True
         self.session.commit()
         return False
