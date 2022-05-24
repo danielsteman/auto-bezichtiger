@@ -12,31 +12,25 @@ from messenger import Messenger
 if __name__ == "__main__":
     config = Config()
     interval = config.get('interval')
-    retry_limit = config.get('retry_limit')
+    batch_size = config.get('batch_size')
     messenger = Messenger()
 
     dbutils.create_tables()
 
-    with Scraper(
-        config=config,
-        estate_agent='pararius',
-        extractor=Extractor,
-        transformer=ParariusTransformer,
-        mapper=Mapper,
-        loader=Loader,
-        messenger=Messenger
-    ) as scraper:
-        while True:
-            fails = 0
-            try:
-                scraper.etl()
-                fails = 0
-                sleep(interval)
-            except Exception as e:
-                logging.warning(f'Something went wrong.\n{e}')
-                fails += 1
-                if fails == retry_limit:
-                    messenger.send_notification(
-                        msg=f'An error was raised {fails} times during the house search.'
-                    )
-                    break
+    while True:
+        with Scraper(
+            config=config,
+            estate_agent='pararius',
+            extractor=Extractor,
+            transformer=ParariusTransformer,
+            mapper=Mapper,
+            loader=Loader,
+            messenger=Messenger
+        ) as scraper:
+            for _ in range(batch_size):  # reinit the driver every `batch_size` times to free up memory
+                try:
+                    scraper.etl()
+                    sleep(interval)
+                except Exception as e:
+                    logging.warning(f'Something went wrong.\n{e}')
+
