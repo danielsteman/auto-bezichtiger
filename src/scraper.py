@@ -40,6 +40,10 @@ class Scraper:
         self.chrome_options.add_argument("--headless")
         self.chrome_options.add_argument('--no-sandbox')
         self.chrome_options.add_argument('--disable-dev-shm-usage')
+        self.chrome_options.add_argument("start-maximized")
+        self.chrome_options.add_argument("enable-automation")
+        self.chrome_options.add_argument("--disable-browser-side-navigation")
+        self.chrome_options.add_argument("--disable-gpu")
     
     def __enter__(self):
         self.driver = webdriver.Chrome(
