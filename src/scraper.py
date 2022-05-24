@@ -39,7 +39,6 @@ class Scraper:
         self.chrome_options.add_argument("start-maximized")
         self.chrome_options.add_argument("enable-automation")
         self.chrome_options.add_argument("--disable-browser-side-navigation")
-        self.chrome_options.add_argument("--disable-gpu")
     
     def __enter__(self):
         self.driver = webdriver.Chrome(
@@ -57,14 +56,16 @@ class Scraper:
         data = transformer.transform()
         loader = self.loader()
         messenger = self.messenger()
+
         for row in data:
             result = loader.load(row)
             if result:
-                msg=f"New listing found on {self.estate_agent}:\nTitle: {row.title}\nAddress: {row.address}\nPrice: {row.price}\nSquare meters: {row.sq_meters}\nWebsite: {self.config.get('agents', self.estate_agent, 'url')}"
+                msg=f"New listing found on {self.estate_agent}:\n{row.title}\n{row.address}\n{row.price}\n{row.sq_meters}\n{row.interior}\n\n{self.config.get('agents', self.estate_agent, 'url')}"
                 messenger.send_notification(
                     msg=msg
                 )
-                logging.info(f"Send message: {msg}")
+                logging.info(f"Message sent: {msg}")
+                
         return data
 
     def __exit__(self):
