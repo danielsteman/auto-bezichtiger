@@ -13,7 +13,6 @@ if __name__ == "__main__":
     config = Config()
     interval = config.get('interval')
     batch_size = config.get('batch_size')
-    messenger = Messenger()
 
     dbutils.create_tables()
 
