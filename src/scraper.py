@@ -68,5 +68,5 @@ class Scraper:
                 
         return data
 
-    def __exit__(self):
+    def __exit__(self, *args, **kwargs):
         self.driver.close()
