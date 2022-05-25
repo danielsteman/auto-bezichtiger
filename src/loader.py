@@ -14,7 +14,7 @@ class Loader:
         self.session = session
 
     def _exists(self, data: Listing) -> bool:
-        query_result = self.session.query(Listing).filter_by(title=data.title).first()
+        query_result = self.session.query(Listing).filter_by(address=data.address).first()
         return bool(query_result)
 
     def load(self, data: Listing) -> bool:
@@ -28,4 +28,3 @@ class Loader:
             new_listing = True
         self.session.close()
         return new_listing
-
