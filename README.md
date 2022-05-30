@@ -2,3 +2,6 @@ Scrape data from housing websites and store listings in a database. Whenever a l
 
 Supported housing providers:
 - Pararius
+
+Reproduce:
+Build Docker container and run anywhere.
